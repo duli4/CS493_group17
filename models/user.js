@@ -46,8 +46,6 @@ async function getUserById(id, includePassword) {
   };
 exports.getUserById = getUserById;
 
-async function
-
 
 async function getUserDetailsById(id, includePassword) {
   /*
@@ -62,8 +60,8 @@ async function getUserDetailsById(id, includePassword) {
     user.courses = await getCourseByStudentId(id);
   }
   return user;
-}
-exports.getBusinessDetailsById = getBusinessDetailsById;
+};
+exports.getUserDetailsById = getUserDetailsById;
 
 function getUserByEmail(email){
   return new Promise((resolve, reject) => {

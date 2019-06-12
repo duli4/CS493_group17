@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const { getBusinessesByOwnerId } = require('../models/user');
+// const { getBusinessesByOwnerId } = require('../models/user');
 // const { getReviewsByUserId } = require('../models/review');
 // const { getPhotosByUserId } = require('../models/photo');
 const {insertNewUser, getUserById, validateUser, getUserByEmail, getRoleByemail} = require('../models/user')
