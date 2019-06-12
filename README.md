@@ -1,8 +1,8 @@
 # CS493_group17
 CS493 Final
-TeanMate：Du Liang,Feng Liang,Zhuo Hong
+TeanMate：Du Liang,Feng Liang,Zhuohong Gu
 
-Du Liang
+Zhuohong Gu
 
 Course roster download – this action, implemented by the GET /courses/{id}/roster endpoint, allows certain authorized users to download a CSV-formatted roster for a specific course.  The roster will contain a list of the students currently enrolled in the course, in CSV format, e.g.:
 
@@ -29,7 +29,7 @@ IP address-based rate limiting
 
 
 
-Zhuohong
+Du Liang
 
 User data fetching – this action, implemented by the GET /users/{id} endpoint, allows Users to see their own data.  Importantly, only a logged-in User can see their own data.  The data returned by this endpoint should also include the list of classes the User is enrolled in (for student Users) or teaching (for instructor Users).
 The User Authaction for the JWT
