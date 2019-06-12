@@ -3,7 +3,7 @@ const router = require('express').Router();
 // const { getBusinessesByOwnerId } = require('../models/user');
 // const { getReviewsByUserId } = require('../models/review');
 // const { getPhotosByUserId } = require('../models/photo');
-const {insertNewUser, getUserById, validateUser, getUserByEmail, getRoleByemail} = require('../models/user')
+const {insertNewUser, getUserById, validateUser, getUserByEmail, getRoleByemail, getUser, getUserDetailsById} = require('../models/user')
 //
 const { generateAuthToken, requireAuthentication,requireAdmin  } = require('../lib/auth')
 
@@ -149,6 +149,24 @@ router.get('/:id',requireAuthentication, async(req, res, next) => {
       res.status(403).send({
         error: "Unauthorized to access the specified resource"
       });
+  }
+});
+
+router.get('/',async(req, res, next) => {
+  try{
+    const users = await getUser()
+    if(users){
+      res.status(200).send(user);
+    }else{
+      res.status(404).send({
+        error: "No user."
+      });
+    }
+  }
+  catch{
+    res.status(500).send({
+      error: "Unable to fetch user."
+    });
   }
 });
 

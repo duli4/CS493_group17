@@ -46,6 +46,21 @@ async function getUserById(id, includePassword) {
   };
 exports.getUserById = getUserById;
 
+async function getUser() {
+  return new Promise((resolve, reject) => {
+    mysqlPool.query(
+      'SELECT * FROM users',
+      function (err, result) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+  };
+exports.getUser = getUser;
+
 
 async function getUserDetailsById(id, includePassword) {
   /*
