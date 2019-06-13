@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `assignments` (
 --
 -- 表的结构 `courses`
 --
-
+DROP TABLE IF EXISTS `courses`;
 CREATE TABLE IF NOT EXISTS `courses` (
   `id` int(11) NOT NULL,
   `subject` text NOT NULL,
@@ -49,6 +49,11 @@ CREATE TABLE IF NOT EXISTS `courses` (
   `instructor` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+LOCK TABLES `courses` WRITE;
+INSERT INTO `courses` VALUES
+  (0,'CS',493,'Cloud Application Development','sp19',1)
+  ;
+UNLOCK TABLES;
 -- --------------------------------------------------------
 
 --
