@@ -57,7 +57,7 @@ exports.getCourseByStudentId = getCourseByStudentId;
 function getCourseCount() {
   return new Promise((resolve, reject) => {
     mysqlPool.query(
-      'SELECT COUNT(*) AS count FROM couses',
+      'SELECT COUNT(*) AS count FROM courses',
       (err, results) => {
         if (err) {
           reject(err);
@@ -76,6 +76,7 @@ function getCoursesPage(page) {
      * Compute offset into collection.
      */
      const count = await getCourseCount();
+     console.log(count);
      const pageSize = 10;
      const lastPage = Math.ceil(count / pageSize);
      page = page > lastPage ? lastPage : page;
