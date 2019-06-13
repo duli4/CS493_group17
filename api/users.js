@@ -56,9 +56,9 @@ router.post('/',requireAdmin,async(req,res,next) => {
 
 router.get('/:id',requireAuthentication, async(req, res, next) => {
   console.log("req user is: ", req.user);
-  const userid = await getUserByEmail(req.user);
+  const userid = await getUserById(req.user);
   console.log("user id is: ", userid);
-  const userRole = await getRoleByemail(req.user);
+  const userRole = await getRoleByemail(userid.email);
   if(req.params.id  == userid.id || (userRole && userRole.role == 'admin')) {
       try{
         const user = await getUserDetailsById(parseInt(req.params.id));
@@ -107,9 +107,10 @@ router.post('/login', async(req,res) => {
     if (req.body && req.body.email && req.body.password) {
       try {
         const authenticated = await validateUser(req.body.email, req.body.password);
-        console.log(authenticated);
+        const user=await getUserByEmail(req.body.email);
         if (authenticated) {
-          const token = generateAuthToken(req.body.email);
+          const token = generateAuthToken(user.id,user.role);
+          console.log(user.id);
           res.status(200).send({
             token: token
           });
