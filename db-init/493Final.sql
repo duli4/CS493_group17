@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS `submissions` (
   `file` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- --------------------------------------------------------
+
 
 --
 -- 資料表結構 `users`
