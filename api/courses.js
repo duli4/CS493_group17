@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const {getUserById, validateUser, getUserByEmail, getRoleByemail, getUser, getUserDetailsById} = require('../models/user');
+const {getUserById, validateUser, getUserByEmail, getRoleByemail, getIdByemail} = require('../models/user');
 const { validateAgainstSchema } = require('../lib/validation');
 const { generateAuthToken, requireAuthentication,requireAdmin  } = require('../lib/auth');
 
@@ -12,7 +12,8 @@ const {
   getCourseById
 } = require('../models/course');
 
-const{ requireAuthentication } = require('../lib/auth');
+const {getEnrollmentByCourseId} = require('../models/enrollment')
+
 
 router.get('/', async (req, res,next) => {
   try {
@@ -39,11 +40,48 @@ router.get('/', async (req, res,next) => {
   }
 });
 
-router.get('/:id/students', requireAuthentication ,async (req,res,next)=>{
-  const cid = req.params.id;
-  if(req.usertype == "instructor" || req.usertype == admin){
-    console.log(getCourseById(cid));
+router.get('/:id/students', requireAuthentication ,requireAdmin,async (req,res,next)=>{
+  try{
+    const cid = req.params.id;
+    const userAdmin = await getRoleByemail(req.user);
+    console.log(userAdmin);
+    if(userAdmin.role == "instructor" || userAdmin.role == "admin"){
+      const course = await getCourseById(cid);
+      if(course.length == 0){
+        res.status(404).send({
+          error: "Course not found."
+        });
+      }
+      if(userAdmin.role == "instructor"){
+        console.log(course);
+        const courseInstructorNum = course[0].instructor;
+        const instructorNum = await getIdByemail(req.user);
+        console.log(courseInstructorNum);
+        console.log(instructorNum);
+        if(courseInstructorNum != instructorNum.id){
+          res.status(403).send({
+            error: "No permission to checkout students."
+          });
+        }
+      }
+      const enrollment = await getEnrollmentByCourseId(cid);
+      res.status(200).send({
+        students:enrollment
+      });
+      console.log(course);
+    }
+    else{
+      res.status(403).send({
+        error: "No permission to checkout students."
+    });
   }
+  }catch(err){
+    console.error(err);
+        res.status(500).send({
+          error: "Error inserting course into DB.  Please try again later."
+        });
+  }
+
 });
 
 router.post('/', requireAuthentication, async (req, res,next) => {

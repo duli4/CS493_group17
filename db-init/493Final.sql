@@ -47,15 +47,7 @@ INSERT INTO `assignments` (`id`, `courseid`, `title`, `points`, `due`) VALUES
 --
 -- 資料表結構 `courses`
 --
-DROP TABLE IF EXISTS `courses`;
-CREATE TABLE `courses` (
-  `id` int(11) NOT NULL,
-  `subject` text NOT NULL,
-  `number` int(11) NOT NULL,
-  `title` text NOT NULL,
-  `term` text NOT NULL,
-  `instructor` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+
 
 --
 -- 資料表的匯出資料 `courses`
@@ -66,12 +58,31 @@ CREATE TABLE `courses` (
 --
 -- 資料表結構 `enrollment`
 --
-
+DROP TABLE IF EXISTS `enrollment`;
 CREATE TABLE IF NOT EXISTS `enrollment` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `courseid` int(11) NOT NULL,
-  `studentid` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `studentid` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2  DEFAULT CHARSET=utf8;
+
+LOCK TABLES `enrollment` WRITE;
+INSERT INTO `enrollment` VALUES
+  (0,1,1),
+  (1,1,2),
+  (0,8,1)
+  ;
+UNLOCK TABLES;
+
+DROP TABLE IF EXISTS `courses`;
+CREATE TABLE `courses` (
+  `id` int(11) NOT NULL,
+  `subject` text NOT NULL,
+  `number` int(11) NOT NULL,
+  `title` text NOT NULL,
+  `term` text NOT NULL,
+  `instructor` int(11) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 LOCK TABLES `courses` WRITE;
 INSERT INTO `courses` VALUES
@@ -82,7 +93,8 @@ INSERT INTO `courses` VALUES
   (4, 'CS', 171, 'Python', 'SP19', 2),
   (5, 'MTH', 271, 'Matrix Maths', 'SP19', 2),
   (6, 'ECE', 271, 'Digital Ocean', 'Su18', 3),
-  (7, 'ECE', 291, 'CuteAnankke', 'Su18', 3);
+  (7, 'ECE', 291, 'CuteAnankke', 'Su18', 3),
+  (8,'CS',492,'Mobile Application Development','sp19',0)
   ;
 UNLOCK TABLES;
 -- --------------------------------------------------------
@@ -142,8 +154,6 @@ ALTER TABLE `courses`
 --
 -- 資料表索引 `enrollment`
 --
-ALTER TABLE `enrollment`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- 資料表索引 `submissions`
@@ -173,8 +183,7 @@ ALTER TABLE `courses`
 --
 -- 使用資料表 AUTO_INCREMENT `enrollment`
 --
-ALTER TABLE `enrollment`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- 使用資料表 AUTO_INCREMENT `submissions`
 --

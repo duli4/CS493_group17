@@ -112,6 +112,23 @@ function getRoleByemail(email) {
 }
 exports.getRoleByemail = getRoleByemail;
 
+function getIdByemail(email) {
+  return new Promise((resolve, reject) => {
+      mysqlPool.query(
+        'SELECT id FROM users WHERE email = ?' ,
+        [ email ],
+        function (err, results) {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(results[0]);
+            }
+        }
+      );
+  });
+}
+exports.getIdByemail = getIdByemail;
+
 exports.validateUser = async function (email, password) {
   const user = await getUserByEmail(email);
   console.log(user);
