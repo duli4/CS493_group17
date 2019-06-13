@@ -14,7 +14,6 @@ const {
 
 const {getEnrollmentByCourseId} = require('../models/enrollment')
 
-
 router.get('/', async (req, res,next) => {
   try {
     /*
