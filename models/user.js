@@ -32,7 +32,7 @@ async function getUserById(id, includePassword) {
   const projection = includePassword ? {} : { password: 0 };
   return new Promise((resolve, reject) => {
     mysqlPool.query(
-      'SELECT id, name, email FROM users where id = ?',
+      'SELECT * FROM users where id = ?',
       id,
       function (err, result) {
         if (err) {
