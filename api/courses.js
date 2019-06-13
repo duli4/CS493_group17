@@ -8,8 +8,11 @@ const { generateAuthToken, requireAuthentication,requireAdmin  } = require('../l
 const {
   getCoursesPage,
   CourseSchema,
-  insertNewCourse
+  insertNewCourse,
+  getCourseById
 } = require('../models/course');
+
+const{ requireAuthentication } = require('../lib/auth');
 
 router.get('/', async (req, res,next) => {
   try {
@@ -33,6 +36,13 @@ router.get('/', async (req, res,next) => {
     res.status(500).send({
       error: "Error fetching courses list.  Please try again later."
     });
+  }
+});
+
+router.get('/:id/students', requireAuthentication ,async (req,res,next)=>{
+  const cid = req.params.id;
+  if(req.usertype == "instructor" || req.usertype == admin){
+    console.log(getCourseById(cid));
   }
 });
 
