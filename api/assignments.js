@@ -216,6 +216,7 @@ router.get("/:id/submissions",async(req,res)=>{
 
 router.post("/:id/submissions",upload.single("file"),async(req,res)=>{
     assignmentid=parseInt(req.params.id);
+    console.log("AsgSun");
     if(req.file){
         const subf = {
                 path: req.file.path,
