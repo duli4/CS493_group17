@@ -114,9 +114,8 @@ router.get('/:id/roster', requireAuthentication ,requireAdmin,async (req,res,nex
       console.log(studentInfo);
       const processedInfo = getProcessedStudentInfo(studentInfo);
       console.log(processedInfo);
-      res.status(200).send({
-        studentInfo:studentInfo
-      });
+      res.attachment('result.csv');
+      res.status(200).send(processedInfo);
       //core code part
     }
     else{
