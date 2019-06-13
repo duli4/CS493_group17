@@ -1,7 +1,7 @@
 const multer = require('multer');
 const crypto = require('crypto');
 const {requireAuthentication}=require('../lib/auth');
-const {mysqlPool}=require("../lib/mysqlPool");
+const mysqlPool = require('../lib/mysqlPool');
 
 const fs = require('fs');
 const { ObjectId, GridFSBucket } = require('mongodb');
@@ -15,6 +15,11 @@ const AssignmentsSchema = {
 };
 
 
+exports.getDownloadStreamByFilename = function (id) {
+    const db = getDBReference();
+    const bucket = new GridFSBucket(db, { bucketName: 'submissions' });
+    return bucket.openDownloadStream(id);
+};
 
 function getAssignmentsById(id) {
     return new Promise((resolve, reject) => {
