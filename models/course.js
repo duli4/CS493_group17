@@ -19,11 +19,11 @@ exports.CourseSchema = CourseSchema;
 
 
 
-function getCourseByInstructorId(id) {
+function getCourseByInstructorId(instructor) {
   return new Promise((resolve, reject) => {
     mysqlPool.query(
-      'SELECT * FROM courses WHERE id = ?',
-      [ id ],
+      'SELECT * FROM courses WHERE instructor = ?',
+      [ instructor ],
       function (err, results) {
         if (err) {
           reject(err);
@@ -37,11 +37,11 @@ function getCourseByInstructorId(id) {
 exports.getCourseByInstructorId = getCourseByInstructorId;
 
 //need to fix
-function getCourseByStudentId(id) {
+function getCourseByStudentId(sid) {
   return new Promise((resolve, reject) => {
     mysqlPool.query(
-      'SELECT * FROM courses WHERE id = ?',
-      [ id ],
+      'SELECT courseid FROM enrollment WHERE studentid = ?',
+      [ sid ],
       function (err, results) {
         if (err) {
           reject(err);
@@ -53,6 +53,23 @@ function getCourseByStudentId(id) {
   });
 }
 exports.getCourseByStudentId = getCourseByStudentId;
+
+function getCourseOfInstructor(cid) {
+  return new Promise((resolve, reject) => {
+    mysqlPool.query(
+      'SELECT instructor FROM courses WHERE id = ?',
+      [ cid ],
+      function (err, results) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(results[0]);
+        }
+      }
+    );
+  });
+}
+exports.getCourseOfInstructor = getCourseOfInstructor;
 
 function getCourseCount() {
   return new Promise((resolve, reject) => {
@@ -123,3 +140,72 @@ function insertNewCourse(course) {
   });
 }
 exports.insertNewCourse = insertNewCourse;
+
+async function getCourseById(id) {
+  return new Promise((resolve, reject) => {
+    mysqlPool.query(
+      'SELECT * FROM courses where id = ?',
+      id,
+      function (err, result) {
+        if (err) {
+          reject(err);
+        } else {
+          console.log(projection);
+          resolve(result[0]);
+        }
+      });
+    });
+  };
+exports.getCourseById = getCourseById;
+
+function updatecourseInfo(cid, upCourse){
+  return new Promise((resolve, reject) => {
+    mysqlPool.query(
+      'UPDATE courses SET ? where id = ?',
+      [upCourse, cid],
+      function (err, result) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result.affectedRows > 0);
+        }
+      });
+    });
+}
+
+exports.updatecourseInfo = updatecourseInfo;
+
+
+function deleteCourse(cid){
+  return new Promise((resolve, reject) => {
+    mysqlPool.query(
+      'DELETE FROM courses where id = ?',
+      [cid],
+      function (err, result) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result.affectedRows > 0);
+        }
+      });
+    });
+}
+
+exports.deleteCourse = deleteCourse;
+
+function deleteEnroll(cid){
+  return new Promise((resolve, reject) => {
+    mysqlPool.query(
+      'DELETE FROM enrollment where courseid = ?',
+      [cid],
+      function (err, result) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result.affectedRows > 0);
+        }
+      });
+    });
+}
+
+exports.deleteEnroll = deleteEnroll;

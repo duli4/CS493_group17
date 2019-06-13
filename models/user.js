@@ -32,14 +32,14 @@ async function getUserById(id, includePassword) {
   const projection = includePassword ? {} : { password: 0 };
   return new Promise((resolve, reject) => {
     mysqlPool.query(
-      'SELECT id, name, email FROM users where id = ?',
+      'SELECT id, name,email, role FROM users where id = ?',
       id,
       function (err, result) {
         if (err) {
           reject(err);
         } else {
           console.log(projection);
-          resolve(result);
+          resolve(result[0]);
         }
       });
     });
@@ -49,7 +49,7 @@ exports.getUserById = getUserById;
 async function getUser() {
   return new Promise((resolve, reject) => {
     mysqlPool.query(
-      'SELECT * FROM users',
+      'SELECT id, name,email, role FROM users',
       function (err, result) {
         if (err) {
           reject(err);
@@ -68,11 +68,17 @@ async function getUserDetailsById(id, includePassword) {
    * specified User, including its course
    */
   const user = await getUserById(id, includePassword);
+  console.log("the user's role is: ", user.role, "user is: ", user);
   if (user.role == 'instructor') {
-    user.courses = await getCourseByInstructorId(id);
+    teach_courses = await getCourseByInstructorId(user.id);
+    console.log("teach course: ", teach_courses);
+    var result = {...user, coursesTeach: teach_courses};
+    return result
   }
   else if(user.role == 'student') {
-    user.courses = await getCourseByStudentId(id);
+    student_course = await getCourseByStudentId(id);
+    var result = {...user, TakenCourses: student_course};
+    return result
   }
   return user;
 };
