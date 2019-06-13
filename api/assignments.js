@@ -23,9 +23,6 @@ const upload = multer({
             callback(null, `${basename}.${extension}`);
         }
     }),
-    fileFilter: (req, file, callback) => {
-        callback(null, !!imageTypes[file.mimetype])
-    }
 });
 function removeUploadedFile(file) {
     return new Promise((resolve, reject) => {
@@ -104,7 +101,7 @@ router.get("/:id",async(req,res)=>{
     res.status(200).send(assignment);
 });
 
-router.patch("/:id",async(req,res)=>{
+router.patch("/:id",requireAuthentication,async(req,res)=>{
     if(req.usertype=='admin'){
         try{
             if(extractValidFields(req.body,AssignmentsSchema)){
