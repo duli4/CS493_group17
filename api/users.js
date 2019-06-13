@@ -26,7 +26,7 @@ router.post('/',requireAdmin,async(req,res,next) => {
       }
       else if(req.body.role == 'admin'  || req.body.role == 'instructor'){
         const userAdmin = await getRoleByemail(req.user);
-        if(userAdmin != 'admin'){
+        if(!userAdmin || userAdmin.role != 'admin'){
           res.status(401).send({
             error: "Invalid authentication token provided, only admin user can create another admin or instructor"
           });
@@ -57,7 +57,7 @@ router.post('/',requireAdmin,async(req,res,next) => {
 router.get('/:id',requireAuthentication, async(req, res, next) => {
   const userid = await getUserByEmail(req.user);
   const userRole = await getRoleByemail(req.user);
-  if(req.params.id  == userid.id || userRole == 'admin') {
+  if(req.params.id  == userid.id || (userRole && userRole.role == 'admin')) {
       try{
         const user = await getUserDetailsById(parseInt(req.params.id));
         if (user) {

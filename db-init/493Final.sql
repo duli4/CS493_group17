@@ -77,18 +77,21 @@ CREATE TABLE IF NOT EXISTS `submissions` (
 --
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` text NOT NULL,
-  `email` text NOT NULL,
+  `email` varchar(255) NOT NULL,
   `password` text NOT NULL,
-  `role` varchar(30) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `role` varchar(30) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
 
 LOCK TABLES `users` WRITE;
 INSERT INTO `users` VALUES
-  (1,'Rob Hess','robhess@oregonstate.edu','$2a$08$Og1tNzAWbCNG1Lmsalo1guYRYsvNzLzz6VSd0ksXA50BmSaLtjYAC','instructor'),
-  (2,'Zhuohong Gu','guz@oregonstate.edu','$2a$08$6xcP/PS/TRG.b6dBSyJ.M.VayiXST5L/vJd3PLmYVRJK9a27ZgWCa','admin'),
-  (3,'Fetanson','fetanson@oregonstate.edu','$2a$08$Dvmcm3ur4AhttHj8VJnJVuUdTzXm8yDHdOPlATAS/tudxP7HwMkCm','student')
+  (0,'Rob Hess','robhess@oregonstate.edu','$2a$08$Og1tNzAWbCNG1Lmsalo1guYRYsvNzLzz6VSd0ksXA50BmSaLtjYAC','instructor'),
+  (1,'Zhuohong Gu','guz@oregonstate.edu','$2a$08$6xcP/PS/TRG.b6dBSyJ.M.VayiXST5L/vJd3PLmYVRJK9a27ZgWCa','admin'),
+  (2,'Fetanson','fetanson@oregonstate.edu','$2a$08$Dvmcm3ur4AhttHj8VJnJVuUdTzXm8yDHdOPlATAS/tudxP7HwMkCm','student')
   ;
 UNLOCK TABLES;
 --
@@ -116,8 +119,7 @@ ALTER TABLE `submissions`
 --
 -- Indexes for table `users`
 --
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`);
+
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -141,8 +143,7 @@ ALTER TABLE `submissions`
 --
 -- AUTO_INCREMENT for table `users`
 --
-ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
