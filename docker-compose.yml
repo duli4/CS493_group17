@@ -19,6 +19,8 @@ services:
     volumes:
       - tarpaulin-api:/var/lib/mysql/
       - ./db-init/:/docker-entrypoint-initdb.d
+    ports:
+      - 3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: tarpaulin-api
