@@ -70,7 +70,7 @@ LOCK TABLES `enrollment` WRITE;
 INSERT INTO `enrollment` VALUES
   (0,1,1),
   (1,1,2),
-  (0,8,1)
+  (2,8,1)
   ;
 UNLOCK TABLES;
 

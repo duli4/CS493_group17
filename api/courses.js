@@ -12,7 +12,7 @@ const {
   getCourseById
 } = require('../models/course');
 
-const {getEnrollmentByCourseId} = require('../models/enrollment')
+const {getEnrollmentByCourseId,EnrollmentSchema,addEnrollmentById} = require('../models/enrollment')
 
 router.get('/', async (req, res,next) => {
   try {
@@ -81,6 +81,62 @@ router.get('/:id/students', requireAuthentication ,requireAdmin,async (req,res,n
         });
   }
 
+});
+
+router.post('/:id/students', requireAuthentication ,requireAdmin,async (req,res,next)=>{
+  if(validateAgainstSchema(req.body,EnrollmentSchema)){
+    try{
+      const cid = req.params.id;
+      const userAdmin = await getRoleByemail(req.user);
+      console.log(userAdmin);
+      if(userAdmin.role == "instructor" || userAdmin.role == "admin"){
+        const course = await getCourseById(cid);
+        if(course.length == 0){
+          res.status(404).send({
+            error: "Course not found."
+          });
+        }
+        if(userAdmin.role == "instructor"){
+          console.log(course);
+          const courseInstructorNum = course[0].instructor;
+          const instructorNum = await getIdByemail(req.user);
+          console.log(courseInstructorNum);
+          console.log(instructorNum);
+          if(courseInstructorNum != instructorNum.id){
+            res.status(403).send({
+              error: "No permission to manage students."
+            });
+          }
+        }
+        //The core code that modify the stuff
+        for(var i = 0;i<req.body.add.length;i++){
+          let resultAdd = await addEnrollmentById(cid,req.body.add[i]);
+        }
+        const resultRemove = await removeEnrollmentByList(cid,req.body.remove);
+        
+        res.status(200).send({
+          message: "Update successful"
+        });
+        console.log(course);
+        //The core code that modify the stuff
+      }
+      else{
+        res.status(403).send({
+          error: "No permission to manage students."
+      });
+    }
+    }catch(err){
+      console.error(err);
+          res.status(500).send({
+            error: "Error inserting course into DB.  Please try again later."
+          });
+    }
+  }
+  else{
+    res.status(400).send({
+      error: "Request body is not a valid user object."
+    });
+  }
 });
 
 router.post('/', requireAuthentication, async (req, res,next) => {
