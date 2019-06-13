@@ -46,6 +46,13 @@ router.get('/', async (req, res,next) => {
   }
 });
 
+router.get('/:id/students', requireAuthentication ,async (req,res,next)=>{
+  const cid = req.params.id;
+  if(req.usertype == "instructor" || req.usertype == admin){
+    console.log(getCourseById(cid));
+  }
+});
+
 router.post('/', requireAuthentication, async (req, res,next) => {
   const userid = await getUserByEmail(req.user);
   const userAdmin = await getRoleByemail(req.user);

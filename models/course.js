@@ -17,7 +17,22 @@ const CourseSchema = {
 };
 exports.CourseSchema = CourseSchema;
 
-
+function getCourseById(id) {
+  return new Promise((resolve, reject) => {
+    mysqlPool.query(
+      'SELECT * FROM courses WHERE id = ?',
+      [ id ],
+      function (err, results) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(results);
+        }
+      }
+    );
+  });
+}
+exports.getCourseById = getCourseById;
 
 function getCourseByInstructorId(instructor) {
   return new Promise((resolve, reject) => {

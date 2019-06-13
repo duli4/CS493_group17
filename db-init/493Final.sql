@@ -77,6 +77,7 @@ INSERT INTO `enrollment` VALUES
   (0, 1, 2);
 
 INSERT INTO `courses` VALUES
+
   (0,'CS',493,'Cloud Application Development','sp19',0),
   (1,'CS',492,'Mobile Application Development','sp19',0),
   (2,'CS',290,'Web Development','sp19',0),
