@@ -55,7 +55,9 @@ router.post('/',requireAdmin,async(req,res,next) => {
 });
 
 router.get('/:id',requireAuthentication, async(req, res, next) => {
+  console.log("req user is: ", req.user);
   const userid = await getUserByEmail(req.user);
+  console.log("user id is: ", userid);
   const userRole = await getRoleByemail(req.user);
   if(req.params.id  == userid.id || (userRole && userRole.role == 'admin')) {
       try{
@@ -89,7 +91,8 @@ router.get('/',async(req, res, next) => {
       });
     }
   }
-  catch{
+  catch(err){
+    console.log("get user error is: ", err);
     res.status(500).send({
       error: "Unable to fetch user."
     });

@@ -12,8 +12,6 @@ const {
   getCourseById
 } = require('../models/course');
 
-const{ requireAuthentication } = require('../lib/auth');
-
 router.get('/', async (req, res,next) => {
   try {
     /*
