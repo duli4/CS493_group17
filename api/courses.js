@@ -12,7 +12,9 @@ const {
   getCourseById
 } = require('../models/course');
 
-const {getEnrollmentByCourseId,EnrollmentSchema,addEnrollmentById} = require('../models/enrollment')
+const {getEnrollmentByCourseId,EnrollmentSchema,addEnrollmentById,removeEnrollmentById,
+   getStudentInfoByCourseId,
+  getProcessedStudentInfo} = require('../models/enrollment')
 
 router.get('/', async (req, res,next) => {
   try {
@@ -83,6 +85,54 @@ router.get('/:id/students', requireAuthentication ,requireAdmin,async (req,res,n
 
 });
 
+router.get('/:id/roster', requireAuthentication ,requireAdmin,async (req,res,next)=>{
+  try{
+    const cid = req.params.id;
+    const userAdmin = await getRoleByemail(req.user);
+    console.log(userAdmin);
+    if(userAdmin.role == "instructor" || userAdmin.role == "admin"){
+      const course = await getCourseById(cid);
+      if(course.length == 0){
+        res.status(404).send({
+          error: "Course not found."
+        });
+      }
+      if(userAdmin.role == "instructor"){
+        console.log(course);
+        const courseInstructorNum = course[0].instructor;
+        const instructorNum = await getIdByemail(req.user);
+        console.log(courseInstructorNum);
+        console.log(instructorNum);
+        if(courseInstructorNum != instructorNum.id){
+          res.status(403).send({
+            error: "No permission to checkout students."
+          });
+        }
+      }
+      //core code part
+      const studentInfo = await getStudentInfoByCourseId(cid);
+      console.log(studentInfo);
+      const processedInfo = getProcessedStudentInfo(studentInfo);
+      console.log(processedInfo);
+      res.status(200).send({
+        studentInfo:studentInfo
+      });
+      //core code part
+    }
+    else{
+      res.status(403).send({
+        error: "No permission to checkout students."
+    });
+  }
+  }catch(err){
+    console.error(err);
+        res.status(500).send({
+          error: "Error inserting course into DB.  Please try again later."
+        });
+  }
+
+});
+
 router.post('/:id/students', requireAuthentication ,requireAdmin,async (req,res,next)=>{
   if(validateAgainstSchema(req.body,EnrollmentSchema)){
     try{
@@ -111,8 +161,12 @@ router.post('/:id/students', requireAuthentication ,requireAdmin,async (req,res,
         //The core code that modify the stuff
         for(var i = 0;i<req.body.add.length;i++){
           let resultAdd = await addEnrollmentById(cid,req.body.add[i]);
+          //console.log(req.body.add[i]);
         }
-        const resultRemove = await removeEnrollmentByList(cid,req.body.remove);
+        for(var i = 0;i<req.body.remove.length;i++){
+          let resultRemove = await removeEnrollmentById(cid,req.body.remove[i]);
+          
+        }
         
         res.status(200).send({
           message: "Update successful"

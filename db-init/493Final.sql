@@ -84,8 +84,6 @@ CREATE TABLE `courses` (
   `instructor` int(11) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
-INSERT INTO `enrollment` VALUES
-  (0, 1, 2);
 
 INSERT INTO `courses` VALUES
   (0,'CS',493,'Cloud Application Development','sp19',1),
