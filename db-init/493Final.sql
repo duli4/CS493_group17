@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `assignments` (
 -- 表的结构 `courses`
 --
 DROP TABLE IF EXISTS `courses`;
-CREATE TABLE IF NOT EXISTS `courses` (
+CREATE TABLE `courses` (
   `id` int(11) NOT NULL,
   `subject` text NOT NULL,
   `number` int(11) NOT NULL,
@@ -51,7 +51,9 @@ CREATE TABLE IF NOT EXISTS `courses` (
 
 LOCK TABLES `courses` WRITE;
 INSERT INTO `courses` VALUES
-  (0,'CS',493,'Cloud Application Development','sp19',1)
+  (0,'CS',493,'Cloud Application Development','sp19',1),
+  (1,'CS',492,'Mobile Application Development','sp19',1),
+  (2,'CS',290,'Web Development','sp19',1)
   ;
 UNLOCK TABLES;
 -- --------------------------------------------------------
@@ -73,8 +75,8 @@ CREATE TABLE IF NOT EXISTS `submissions` (
 --
 -- 表的结构 `users`
 --
-
-CREATE TABLE IF NOT EXISTS `users` (
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `name` text NOT NULL,
   `email` text NOT NULL,
@@ -82,6 +84,13 @@ CREATE TABLE IF NOT EXISTS `users` (
   `role` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+LOCK TABLES `users` WRITE;
+INSERT INTO `users` VALUES
+  (1,'Rob Hess','robhess@oregonstate.edu','$2a$08$Og1tNzAWbCNG1Lmsalo1guYRYsvNzLzz6VSd0ksXA50BmSaLtjYAC','instructor'),
+  (2,'Zhuohong Gu','guz@oregonstate.edu','$2a$08$6xcP/PS/TRG.b6dBSyJ.M.VayiXST5L/vJd3PLmYVRJK9a27ZgWCa','admin'),
+  (3,'Fetanson','fetanson@oregonstate.edu','$2a$08$Dvmcm3ur4AhttHj8VJnJVuUdTzXm8yDHdOPlATAS/tudxP7HwMkCm','student')
+  ;
+UNLOCK TABLES;
 --
 -- Indexes for dumped tables
 --
