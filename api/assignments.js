@@ -10,8 +10,6 @@ const AssignmentsSchema = {
     due: { required: true }
 };
 const {PushTheFileInFs,getAssignmentsById,updateAssignment,getCourseByid,getSumbitByAsgid,insertNewAssignments,insertNewSumbit,deleteAssignmentByid} = require("../models/assignments");
-const multer = require('multer');
-const crypto = require('crypto');
 const fs = require('fs');
 
 const upload = multer({
@@ -108,7 +106,7 @@ router.patch("/:id",async(req,res)=>{
     if(req.usertype=='admin'){
         try{
             if(extractValidFields(req.body,AssignmentsSchema)){
-                await result=await updateAssignment(req.body,parseInt(req.params.id));
+                result=await updateAssignment(req.body,parseInt(req.params.id));
                 if(result){
                     const id=parseInt(req.params.id);
                     res.status(200).send({
@@ -144,7 +142,7 @@ router.patch("/:id",async(req,res)=>{
             if(courseinfo.instructor==req.user){
                 try{
                     if(extractValidFields(req.body,AssignmentsSchema)){
-                        await result=await updateAssignment(req.body,parseInt(req.params.id));
+                        result=await updateAssignment(req.body,parseInt(req.params.id));
                         if(result){
 
                             res.status(200).send({
@@ -244,4 +242,4 @@ router.post("/:id/submissions",upload.single("file"),async(req,res)=>{
         });
     }
 });
-
+module.exports = router;
