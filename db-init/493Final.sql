@@ -47,8 +47,8 @@ INSERT INTO `assignments` (`id`, `courseid`, `title`, `points`, `due`) VALUES
 --
 -- 資料表結構 `courses`
 --
-
-CREATE TABLE IF NOT EXISTS `courses` (
+DROP TABLE IF EXISTS `courses`;
+CREATE TABLE `courses` (
   `id` int(11) NOT NULL,
   `subject` text NOT NULL,
   `number` int(11) NOT NULL,
@@ -61,13 +61,6 @@ CREATE TABLE IF NOT EXISTS `courses` (
 -- 資料表的匯出資料 `courses`
 --
 
-INSERT INTO `courses` (`id`, `subject`, `number`, `title`, `term`, `instructor`) VALUES
-(1, 'CS', 150, 'CPP Program', 'SP19', 2),
-(2, 'CS', 171, 'Python', 'SP19', 2),
-(3, 'MTH', 271, 'Matrix Maths', 'SP19', 2),
-(4, 'ECE', 271, 'Digital Ocean', 'Su18', 3),
-(5, 'ECE', 291, 'CuteAnankke', 'Su18', 3);
-
 -- --------------------------------------------------------
 
 --
@@ -79,6 +72,20 @@ CREATE TABLE IF NOT EXISTS `enrollment` (
   `courseid` int(11) NOT NULL,
   `studentid` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `enrollment` VALUES
+  (0, 1, 2);
+
+INSERT INTO `courses` VALUES
+
+  (0,'CS',493,'Cloud Application Development','sp19',0),
+  (1,'CS',492,'Mobile Application Development','sp19',0),
+  (2,'CS',290,'Web Development','sp19',0),
+  (3, 'CS', 150, 'CPP Program', 'SP19', 1),
+  (4, 'CS', 171, 'Python', 'SP19', 1),
+  (5, 'MTH', 271, 'Matrix Maths', 'SP19', 1),
+  (6, 'ECE', 271, 'Digital Ocean', 'Su18', 0),
+  (7, 'ECE', 291, 'CuteAnankke', 'Su18', 0);
 
 -- --------------------------------------------------------
 
@@ -94,20 +101,29 @@ CREATE TABLE IF NOT EXISTS `submissions` (
   `file` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- --------------------------------------------------------
+
 
 --
 -- 資料表結構 `users`
 --
-
-CREATE TABLE IF NOT EXISTS `users` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` text NOT NULL,
-  `email` text NOT NULL,
+  `email` varchar(255) NOT NULL,
   `password` text NOT NULL,
-  `role` varchar(30) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `role` varchar(30) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
+
+
+INSERT INTO `users` VALUES
+  (0,'Rob Hess','robhess@oregonstate.edu','$2a$08$Og1tNzAWbCNG1Lmsalo1guYRYsvNzLzz6VSd0ksXA50BmSaLtjYAC','instructor'),
+  (1,'Zhuohong Gu','guz@oregonstate.edu','$2a$08$6xcP/PS/TRG.b6dBSyJ.M.VayiXST5L/vJd3PLmYVRJK9a27ZgWCa','admin'),
+  (2,'Fetanson','fetanson@oregonstate.edu','$2a$08$Dvmcm3ur4AhttHj8VJnJVuUdTzXm8yDHdOPlATAS/tudxP7HwMkCm','student')
+  ;
 --
 -- 已匯出資料表的索引
 --
@@ -139,8 +155,7 @@ ALTER TABLE `submissions`
 --
 -- 資料表索引 `users`
 --
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`);
+
 
 --
 -- 在匯出的資料表使用 AUTO_INCREMENT
@@ -169,8 +184,7 @@ ALTER TABLE `submissions`
 --
 -- 使用資料表 AUTO_INCREMENT `users`
 --
-ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
