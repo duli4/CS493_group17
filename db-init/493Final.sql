@@ -61,13 +61,6 @@ CREATE TABLE `courses` (
 -- 資料表的匯出資料 `courses`
 --
 
-INSERT INTO `courses` (`id`, `subject`, `number`, `title`, `term`, `instructor`) VALUES
-(1, 'CS', 150, 'CPP Program', 'SP19', 2),
-(2, 'CS', 171, 'Python', 'SP19', 2),
-(3, 'MTH', 271, 'Matrix Maths', 'SP19', 2),
-(4, 'ECE', 271, 'Digital Ocean', 'Su18', 3),
-(5, 'ECE', 291, 'CuteAnankke', 'Su18', 3);
-
 -- --------------------------------------------------------
 
 --
@@ -84,7 +77,12 @@ LOCK TABLES `courses` WRITE;
 INSERT INTO `courses` VALUES
   (0,'CS',493,'Cloud Application Development','sp19',1),
   (1,'CS',492,'Mobile Application Development','sp19',1),
-  (2,'CS',290,'Web Development','sp19',1)
+  (2,'CS',290,'Web Development','sp19',1),
+  (3, 'CS', 150, 'CPP Program', 'SP19', 2),
+  (4, 'CS', 171, 'Python', 'SP19', 2),
+  (5, 'MTH', 271, 'Matrix Maths', 'SP19', 2),
+  (6, 'ECE', 271, 'Digital Ocean', 'Su18', 3),
+  (7, 'ECE', 291, 'CuteAnankke', 'Su18', 3);
   ;
 UNLOCK TABLES;
 -- --------------------------------------------------------
