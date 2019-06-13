@@ -54,8 +54,8 @@ router.get('/:id/students', requireAuthentication ,async (req,res,next)=>{
 });
 
 router.post('/', requireAuthentication, async (req, res,next) => {
-  const userid = await getUserByEmail(req.user);
-  const userAdmin = await getRoleByemail(req.user);
+  const userid = await getUserById(req.user);
+  const userAdmin = await getUserById(req.user);
   console.log(userAdmin);
   if(userAdmin.role == 'admin') {
     if (validateAgainstSchema(req.body, CourseSchema)) {
@@ -105,8 +105,8 @@ router.get('/:id', async(req, res, next) => {
 });
 
 router.put('/:id', requireAuthentication, async(req,res,next) => {
-  const userid = await getUserByEmail(req.user);
-  const userRole = await getRoleByemail(req.user);
+  const userid = await getUserById(req.user);
+  const userRole = await getUserById(req.user);
   const teach_id = getCourseOfInstructor(id);
   if (validateAgainstSchema(req.body, CourseSchema)) {
     if(userRole.role == 'admin' || (userRole.role == 'instructor' && userRole.id == teach_id)) {
@@ -133,7 +133,7 @@ router.put('/:id', requireAuthentication, async(req,res,next) => {
 });
 
 router.delete('/:id', requireAuthentication, async(req,res,next) => {
-    const userRole = await getRoleByemail(req.user);
+    const userRole = await getUserById(req.user);
     if(userRole.role == 'admin'){
       try{
         const courseid = deleteCourse(id);

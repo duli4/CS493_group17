@@ -30,7 +30,7 @@ app.use('*', function (req, res, next) {
 });
 
 // 
-// connectToDB(async () => {
+connectToDB(async () => {
 //   while(1){
 //     try{
 //       await connectToRabbitMQ('images');
@@ -40,11 +40,7 @@ app.use('*', function (req, res, next) {
 //       //console.log("connection err",e,"retrying");
 //     }
 //   }
-//   app.listen(port, () => {
-//     console.log("== Server is running on port", port);
-//   });
-// });
-
-app.listen(port, function() {
-  console.log("== Server is running on port", port);
+   app.listen(port, () => {
+     console.log("== Server is running on port", port);
+   });
 });

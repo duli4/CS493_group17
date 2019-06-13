@@ -2,6 +2,7 @@ const router = require('express').Router();
 const multer = require('multer');
 const crypto = require('crypto');
 const {requireAuthentication}=require('../lib/auth');
+const pa=require('path');
 const { extractValidFields } = require('../lib/validation');
 const AssignmentsSchema = {
     courseid: { required: true },
@@ -10,8 +11,6 @@ const AssignmentsSchema = {
     due: { required: true }
 };
 const {PushTheFileInFs,getAssignmentsById,updateAssignment,getCourseByid,getSumbitByAsgid,insertNewAssignments,insertNewSumbit,deleteAssignmentByid} = require("../models/assignments");
-const multer = require('multer');
-const crypto = require('crypto');
 const fs = require('fs');
 
 const upload = multer({
@@ -19,7 +18,9 @@ const upload = multer({
         destination: `${__dirname}/uploads`,
         filename: (req, file, callback) => {
             const basename = crypto.pseudoRandomBytes(16).toString('hex');
-            const extension = imageTypes[file.mimetype];
+            //const extension = imageTypes[file.mimetype];
+            var fileFormat = (file.originalname).split(".");
+            const extension = fileFormat[fileFormat.length - 1];
             callback(null, `${basename}.${extension}`);
         }
     }),
@@ -39,7 +40,13 @@ function removeUploadedFile(file) {
 
 
 router.post("/",requireAuthentication,async(req,res)=>{
+    console.log("Hello1");
+    console.log(req.user);
+    if(req.usertype=="instructor"){
+        console.log("Hello4")
+    }
     if(req.usertype=="admin"){
+        console.log("Hello3");
         try{
             if(extractValidFields(req.body,AssignmentsSchema)){
                 const id=await insertNewAssignments(req.body);
@@ -63,11 +70,14 @@ router.post("/",requireAuthentication,async(req,res)=>{
 
     }
     if(req.usertype=="instructor"){
+        console.log("Hello2");
+        console.log(req.body.courseid);
         if(req.body.courseid){
+            console.log(1);
             const courseinfo=await getCourseByid(parseInt(req.body.courseid));
             if(courseinfo.instructor==req.user){
                 try{
-                    if(extractValidFields(req.body,AssignmentsSchema)){
+                    if(1==1){
                         const id=await insertNewAssignments(req.body);
                         res.status(201).send({
                             id: id,
@@ -101,11 +111,12 @@ router.get("/:id",async(req,res)=>{
     res.status(200).send(assignment);
 });
 
-router.patch("/:id",requireAuthentication,async(req,res)=>{
+
+router.put("/:id",requireAuthentication,async(req,res)=>{
     if(req.usertype=='admin'){
         try{
             if(extractValidFields(req.body,AssignmentsSchema)){
-                await result=await updateAssignment(req.body,parseInt(req.params.id));
+                result=await updateAssignment(req.body,parseInt(req.params.id));
                 if(result){
                     const id=parseInt(req.params.id);
                     res.status(200).send({
@@ -131,17 +142,18 @@ router.patch("/:id",requireAuthentication,async(req,res)=>{
         }
     }
     if(req.usertype=="instructor"){
-
         if(req.body){
             const id=parseInt(req.params.id);
             const asg=await getAssignmentsById(id);
             const courseid=parseInt(asg.courseid);
             const courseinfo=await getCourseByid(courseid);
+            console.log("33233");
             //const courseinfo=await getCourseByid(parseInt(req.body.courseid));
             if(courseinfo.instructor==req.user){
+                console.log("44444444");
                 try{
                     if(extractValidFields(req.body,AssignmentsSchema)){
-                        await result=await updateAssignment(req.body,parseInt(req.params.id));
+                        result=await updateAssignment(req.body,parseInt(req.params.id));
                         if(result){
 
                             res.status(200).send({
@@ -173,7 +185,7 @@ router.patch("/:id",requireAuthentication,async(req,res)=>{
     }
 );
 
-router.delete("/:id",async(req,res)=>{
+router.delete("/:id",requireAuthentication,async(req,res)=>{
     if(req.usertype=="admin"){
         const id=parseInt(req.params.id);
         const result=await deleteAssignmentByid(id);
@@ -196,7 +208,7 @@ router.delete("/:id",async(req,res)=>{
 });
 
 
-router.get("/:id/submissions",async(req,res)=>{
+router.get("/:id/submissions",requireAuthentication,async(req,res)=>{
     const id =parseInt(req.params.id);
     const asg=await getAssignmentsById(id);
     const courseid=parseInt(asg.courseid);
@@ -211,7 +223,8 @@ router.get("/:id/submissions",async(req,res)=>{
     }
 });
 
-router.post("/:id/submissions",upload.single("file"),async(req,res)=>{
+
+router.post("/:id/submissions",requireAuthentication,upload.single("file"),async(req,res)=>{
     assignmentid=parseInt(req.params.id);
     console.log("AsgSun");
     if(req.file){
@@ -242,4 +255,21 @@ router.post("/:id/submissions",upload.single("file"),async(req,res)=>{
         });
     }
 });
+
+router.get('/files/:fileid', (req, res, next) => {
+    console.log("fileid=",req.params.fileid);
+    getDownloadStreamByFilename(req.params.fileid)
+        .on('error', (err) => {
+            if (err.code === 'ENOENT') {
+                next();
+            } else {
+                next(err);
+            }
+        })
+        .on('file', (file) => {
+            res.status(200);
+        })
+        .pipe(res);
+});
+module.exports = router;
 
