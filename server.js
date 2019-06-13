@@ -12,7 +12,7 @@ const port = process.env.PORT || 8000;
  * Morgan is a popular logger.
  */
 app.use(morgan('dev'));
-//const { connectToRabbitMQ, getChannel } = require('./lib/rabbitmq');
+const { connectToRabbitMQ, getChannel } = require('./lib/rabbitmq');
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
@@ -31,6 +31,15 @@ app.use('*', function (req, res, next) {
 
 
 connectToDB(async () => {
+  while(1){
+    try{
+      await connectToRabbitMQ('images');
+      console.log("RabbitMQ Connect Success");
+      break;
+    }catch (e) {
+      //console.log("connection err",e,"retrying");
+    }
+  }
   app.listen(port, () => {
     console.log("== Server is running on port", port);
   });

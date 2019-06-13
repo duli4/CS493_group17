@@ -6,16 +6,16 @@ services:
     image: mongo:latest
     restart: always
     volumes:
-      - mongo-data:/data/db4
+      - mongo-data:/data/db1
       - ./db-init/:/docker-entrypoint-initdb.d
     ports:
       - 27017:27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: cs493final
-      MONGO_INITDB_DATABASE: final
-      MONGO_USER: cs493final
-      MONGO_PASSWORD: cs493final
+      MONGO_INITDB_ROOT_PASSWORD: hunter2
+      MONGO_INITDB_DATABASE: businesses
+      MONGO_USER: businesses
+      MONGO_PASSWORD: hunter2
       
   mysql:
     image: mysql:5
@@ -27,9 +27,34 @@ services:
       - 3306:3306
     environment:
       MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
-      MYSQL_DATABASE: cs493final
-      MYSQL_USER: cs493final
-      MYSQL_PASSWORD: cs493final
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      
+      
+  rabbitmq:
+    image: rabbitmq:3-management
+    restart: always
+    ports:
+      - 15672:15672
+      - 5672:5672
+    environment:
+      RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: '-rabbit channel_max 0'
+  api:
+    build: .
+    image: finalproject-backend
+    restart: always
+    ports:
+      - 8000:8000
+    environment:
+      MONGO_DATABASE: businesses
+      MONGO_USER: businesses
+      MONGO_PASSWORD: hunter2
+      MONGO_HOST: mongodb
+      MONGO_PORT: 27017
+      RABBITMQ_HOST: rabbitmq
+
+
 
 
 volumes:
