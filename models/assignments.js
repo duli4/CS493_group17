@@ -15,10 +15,10 @@ const AssignmentsSchema = {
 };
 
 
-exports.getDownloadStreamByFileId = function (id) {
+exports.getDownloadStreamByFilename = function (filename) {
     const db = getDBReference();
     const bucket = new GridFSBucket(db, { bucketName: 'submissions' });
-    return bucket.openDownloadStream(id);
+    return bucket.openDownloadStreamByName(filename);
 };
 
 function getAssignmentsById(id) {
