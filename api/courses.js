@@ -9,7 +9,8 @@ const {
   getCoursesPage,
   CourseSchema,
   insertNewCourse,
-  getCourseById
+  getCourseById,
+    getCourseOfInstructor
 } = require('../models/course');
 
 const {getEnrollmentByCourseId,EnrollmentSchema,addEnrollmentById,removeEnrollmentById,
@@ -243,9 +244,9 @@ router.get('/:id',requireAuthentication, async(req, res, next) => {
 });
 
 router.put('/:id', requireAuthentication, async(req,res,next) => {
-  const userid = await getUserByEmail(req.user);
-  const userRole = await getRoleByemail(req.user);
-  const teach_id = getCourseOfInstructor(id);
+  const userid = await getUserById(req.user);
+  const userRole = await getUserById(req.user);
+  const teach_id = getCourseOfInstructor(parseInt(req.params.id));
   if (validateAgainstSchema(req.body, CourseSchema)) {
     if(userRole.role == 'admin' || (userRole.role == 'instructor' && userRole.id == teach_id)) {
       try{
@@ -271,7 +272,7 @@ router.put('/:id', requireAuthentication, async(req,res,next) => {
 });
 
 router.delete('/:id', requireAuthentication, async(req,res,next) => {
-  const userRole = await getRoleByemail(req.user);
+  const userRole = await getUserById(req.user);
   if(userRole.role == 'admin'){
     try{
       const courseid = deleteCourse(id);
