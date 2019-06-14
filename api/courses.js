@@ -10,7 +10,10 @@ const {
   CourseSchema,
   insertNewCourse,
   getCourseById,
-    getCourseOfInstructor
+    getCourseOfInstructor,
+  updatecourseInfo,
+    deleteCourse,
+    deleteEnroll
 } = require('../models/course');
 
 const {getEnrollmentByCourseId,EnrollmentSchema,addEnrollmentById,removeEnrollmentById,
@@ -246,12 +249,14 @@ router.get('/:id',requireAuthentication, async(req, res, next) => {
 router.put('/:id', requireAuthentication, async(req,res,next) => {
   const userid = await getUserById(req.user);
   const userRole = await getUserById(req.user);
-  const teach_id = getCourseOfInstructor(parseInt(req.params.id));
+  const teach_id = await getCourseOfInstructor(parseInt(req.params.id));
+  console.log(teach_id.instructor);
+  console.log(userRole.id);
   if (validateAgainstSchema(req.body, CourseSchema)) {
-    if(userRole.role == 'admin' || (userRole.role == 'instructor' && userRole.id == teach_id)) {
+    if(userRole.role == 'admin' || (userRole.role == 'instructor' && userRole.id == teach_id.instructor)) {
       try{
-        const updated = updatecourseInfo(parseInt(req.params.id), req.body);
-        res.status(200).send({});
+        const updated = await updatecourseInfo(parseInt(req.params.id), req.body);
+        res.status(200).send({"Status":"Success"});
       }catch(err){
         console.log("put method: ",err);
         res.status(404).send({
@@ -272,11 +277,12 @@ router.put('/:id', requireAuthentication, async(req,res,next) => {
 });
 
 router.delete('/:id', requireAuthentication, async(req,res,next) => {
-  const userRole = await getUserById(req.user);
+  const userRole = await getUserById(parseInt(req.user));
+  console.log(userRole.role);
   if(userRole.role == 'admin'){
     try{
-      const courseid = deleteCourse(id);
-      const enrolldelete = deleteEnroll(id);
+      const courseid = await deleteCourse(parseInt(req.params.id));
+      const enrolldelete = await deleteEnroll(parseInt(req.params.id));
       console.log("enroll delete:", enrolldelete, "course id: ", courseid);
       res.status(204).end();
     }
