@@ -21,11 +21,18 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
       - ./db-init/:/docker-entrypoint-initdb.d
+    ports:
+      - 3306:3306
     environment:
       MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
       MYSQL_DATABASE: cs493final
       MYSQL_USER: cs493final
       MYSQL_PASSWORD: cs493final
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - 6379:6379
   api:
     build: .
     image: FinalProject
@@ -38,9 +45,12 @@ services:
       MONGO_PASSWORD: cs493final
       MONGO_HOST: mongodb
       MONGO_PORT: 27017
-
-
-
+      MYSQL_HOST: mysql
+      MYSQL_USER: cs493final
+      MYSQL_DATABASE: cs493final
+      MYSQL_PASSWORD: cs493final
+      REDIS_PORT: 6379
+      REDIS_HOST: redis
 
 volumes:
   mongo-data:
