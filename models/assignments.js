@@ -1,7 +1,7 @@
 const multer = require('multer');
 const crypto = require('crypto');
 const {requireAuthentication}=require('../lib/auth');
-const {mysqlPool}=require("../lib/mysqlPool");
+const mysqlPool =require("../lib/mysqlPool");
 
 const fs = require('fs');
 const { ObjectId, GridFSBucket } = require('mongodb');
@@ -166,3 +166,20 @@ function updateAssignment(assignment,id) {
 }
 exports.updateAssignment=updateAssignment;
 
+
+function getAssignmentsByCourseId(cid) {
+    return new Promise((resolve, reject) => {
+        mysqlPool.query(
+            'SELECT id FROM assignments WHERE courseid = ?',
+            [ cid ],
+            (err, results) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(results);
+                }
+            }
+        );
+    });
+}
+exports.getAssignmentsByCourseId=getAssignmentsByCourseId;

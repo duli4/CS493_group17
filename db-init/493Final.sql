@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS `assignments` (
 INSERT INTO `assignments` (`id`, `courseid`, `title`, `points`, `due`) VALUES
 (1, 2, 'Install linux on your computer', 40, '2019-06-07 00:00:00'),
 (2, 2, 'Keiyh', 100, '2019-06-07 00:00:00');
+(3, 1, 'Make a Cheesecake', 160, '2019-06-14 00:00:00');
 
 -- --------------------------------------------------------
 

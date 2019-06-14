@@ -12,6 +12,8 @@ const {
   getCourseById
 } = require('../models/course');
 
+const {getAssignmentsByCourseId} = require('../models/assignments')
+
 const {getEnrollmentByCourseId,EnrollmentSchema,addEnrollmentById,removeEnrollmentById,
    getStudentInfoByCourseId,
   getProcessedStudentInfo} = require('../models/enrollment')
@@ -39,6 +41,18 @@ router.get('/', async (req, res,next) => {
       error: "Error fetching courses list.  Please try again later."
     });
   }
+});
+
+router.get('/:id/assignments',async (req,res,next)=>{
+  const cid = req.params.id;
+  const course = await getCourseById(cid);
+      if(course.length == 0){
+        res.status(404).send({
+          error: "Course not found."
+        });
+      }
+  const list = await getAssignmentsByCourseId(cid);
+  res.status(200).send(list);
 });
 
 router.get('/:id/students', requireAuthentication ,requireAdmin,async (req,res,next)=>{
