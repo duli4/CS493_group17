@@ -10,7 +10,7 @@ const AssignmentsSchema = {
     points: { required: true },
     due: { required: true }
 };
-const {PushTheFileInFs,getAssignmentsById,updateAssignment,getCourseByid,getSumbitByAsgid,insertNewAssignments,insertNewSumbit,deleteAssignmentByid} = require("../models/assignments");
+const {PushTheFileInFs,getAssignmentsById,updateAssignment,getCourseByid,getSumbitByAsgid,insertNewAssignments,insertNewSumbit,deleteAssignmentByid,getDownloadStreamByFilename} = require("../models/assignments");
 const fs = require('fs');
 
 const upload = multer({
@@ -110,6 +110,7 @@ router.get("/:id",async(req,res)=>{
     const assignment=await getAssignmentsById(id);
     res.status(200).send(assignment);
 });
+
 
 router.put("/:id",requireAuthentication,async(req,res)=>{
     if(req.usertype=='admin'){
@@ -225,6 +226,7 @@ router.get("/:id/submissions",requireAuthentication,async(req,res)=>{
 
 router.post("/:id/submissions",requireAuthentication,upload.single("file"),async(req,res)=>{
     assignmentid=parseInt(req.params.id);
+    console.log("AsgSun");
     if(req.file){
         const subf = {
                 path: req.file.path,
@@ -235,11 +237,12 @@ router.post("/:id/submissions",requireAuthentication,upload.single("file"),async
         const sub={
             assignmentid:assignmentid,
             studentid:req.user,
-            file:'/assignment/media/${fid}'
+            file:"/assignments/files/"+req.file.filename
         }
         try{
+            console.log(sub);
             const subid=await insertNewSumbit(sub);
-            res.statusI(201).send({
+            res.status(201).send({
                 submissionid:subid
             });
         }catch(err){
@@ -254,9 +257,9 @@ router.post("/:id/submissions",requireAuthentication,upload.single("file"),async
     }
 });
 
-router.get('/files/:fileid', (req, res, next) => {
-    console.log("fileid=",req.params.fileid);
-    getDownloadStreamByFilename(req.params.fileid)
+router.get('/files/:filename', (req, res, next) => {
+    console.log("Fname=",req.params.filename);
+    getDownloadStreamByFilename(req.params.filename)
         .on('error', (err) => {
             if (err.code === 'ENOENT') {
                 next();
@@ -265,7 +268,7 @@ router.get('/files/:fileid', (req, res, next) => {
             }
         })
         .on('file', (file) => {
-            res.status(200);
+            res.status(200).type("image/jpeg");
         })
         .pipe(res);
 });
