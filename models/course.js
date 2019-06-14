@@ -165,7 +165,7 @@ async function getCourseById(id) {
         if (err) {
           reject(err);
         } else {
-          console.log(projection);
+          //console.log(projection);
           resolve(result[0]);
         }
       });

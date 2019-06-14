@@ -224,10 +224,10 @@ router.post('/', requireAuthentication, async (req, res,next) => {
 });
 
 
-router.get('/:id', async(req, res, next) => {
+router.get('/:id',requireAuthentication, async(req, res, next) => {
   try{
     const course = await getCourseById(parseInt(req.params.id));
-    if (user) {
+    if (req.user) {
       res.status(200).send(course);
     } else{
       res.status(404).send({
