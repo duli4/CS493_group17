@@ -4,7 +4,7 @@ services:
     image: mongo:latest
     restart: always
     volumes:
-      - mongo-data:/data/db1
+      - mongo-data:/data/db20
       - ./db-init/:/docker-entrypoint-initdb.d
     ports:
       - 27017:27017
@@ -35,7 +35,7 @@ services:
       - 6379:6379
   api:
     build: .
-    image: FinalProject
+    image: finalproject
     restart: always
     ports:
       - 8000:8000
