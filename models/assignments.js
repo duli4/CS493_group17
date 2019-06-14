@@ -172,3 +172,19 @@ function updateAssignment(assignment,id) {
 }
 exports.updateAssignment=updateAssignment;
 
+function getAssignmentsByCourseId(cid) {
+    return new Promise((resolve, reject) => {
+        mysqlPool.query(
+            'SELECT id FROM assignments WHERE courseid = ?',
+            [ cid ],
+            (err, results) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(results);
+                }
+            }
+        );
+    });
+}
+exports.getAssignmentsByCourseId=getAssignmentsByCourseId;

@@ -4,7 +4,7 @@ const {getUserById, validateUser, getUserByEmail, getRoleByemail, getIdByemail} 
 const { validateAgainstSchema } = require('../lib/validation');
 const { generateAuthToken, requireAuthentication,requireAdmin  } = require('../lib/auth');
 
-
+const {getAssignmentsByCourseId}=require("../models/assignments");
 const {
   getCoursesPage,
   CourseSchema,
@@ -297,6 +297,18 @@ router.delete('/:id', requireAuthentication, async(req,res,next) => {
       error: "No power to delete the course"
     });
   }
+});
+
+router.get('/:id/assignments',async (req,res,next)=>{
+  const cid = parseInt(req.params.id);
+  const course = await getCourseById(cid);
+  if(course.length == 0){
+    res.status(404).send({
+      error: "Course not found."
+    });
+  }
+  const list = await getAssignmentsByCourseId(cid);
+  res.status(200).send(list);
 });
 
 module.exports = router;
