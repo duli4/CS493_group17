@@ -4,12 +4,16 @@ const {getUserById, validateUser, getUserByEmail, getRoleByemail, getIdByemail} 
 const { validateAgainstSchema } = require('../lib/validation');
 const { generateAuthToken, requireAuthentication,requireAdmin  } = require('../lib/auth');
 
-
+const {getAssignmentsByCourseId}=require("../models/assignments");
 const {
   getCoursesPage,
   CourseSchema,
   insertNewCourse,
-  getCourseById
+  getCourseById,
+    getCourseOfInstructor,
+  updatecourseInfo,
+    deleteCourse,
+    deleteEnroll
 } = require('../models/course');
 
 const {getEnrollmentByCourseId,EnrollmentSchema,addEnrollmentById,removeEnrollmentById,
@@ -164,7 +168,6 @@ router.post('/:id/students', requireAuthentication ,requireAdmin,async (req,res,
         }
         for(var i = 0;i<req.body.remove.length;i++){
           let resultRemove = await removeEnrollmentById(cid,req.body.remove[i]);
-
         }
 
         res.status(200).send({
@@ -224,5 +227,88 @@ router.post('/', requireAuthentication, async (req, res,next) => {
   }
 });
 
+
+router.get('/:id',requireAuthentication, async(req, res, next) => {
+  try{
+    const course = await getCourseById(parseInt(req.params.id));
+    if (req.user) {
+      res.status(200).send(course);
+    } else{
+      res.status(404).send({
+        error: "No such course."
+      });
+    }
+  } catch (err){
+    console.log("Course ERROR: ", err);
+    res.status(404).send({
+      error: "Unable to fetch course."
+    });
+  }
+});
+
+router.put('/:id', requireAuthentication, async(req,res,next) => {
+  const userid = await getUserById(req.user);
+  const userRole = await getUserById(req.user);
+  const teach_id = await getCourseOfInstructor(parseInt(req.params.id));
+  console.log(teach_id.instructor);
+  console.log(userRole.id);
+  if (validateAgainstSchema(req.body, CourseSchema)) {
+    if(userRole.role == 'admin' || (userRole.role == 'instructor' && userRole.id == teach_id.instructor)) {
+      try{
+        const updated = await updatecourseInfo(parseInt(req.params.id), req.body);
+        res.status(200).send({"Status":"Success"});
+      }catch(err){
+        console.log("put method: ",err);
+        res.status(404).send({
+          error: "Unable to update course."
+        });
+      }
+    }
+    else{
+      res.status(403).send({
+        error: "Error manager to update course information!"
+      });
+    }
+  }else{
+    res.status(400).send({
+      error: "Invalid body of course."
+    });
+  }
+});
+
+router.delete('/:id', requireAuthentication, async(req,res,next) => {
+  const userRole = await getUserById(parseInt(req.user));
+  console.log(userRole.role);
+  if(userRole.role == 'admin'){
+    try{
+      const courseid = await deleteCourse(parseInt(req.params.id));
+      const enrolldelete = await deleteEnroll(parseInt(req.params.id));
+      console.log("enroll delete:", enrolldelete, "course id: ", courseid);
+      res.status(204).end();
+    }
+    catch(err){
+      console.log("in delete endpoint: ", err);
+      res.status(400).send({
+        error: "Error to delete course. "
+      });
+    }
+  }else{
+    res.status(403).send({
+      error: "No power to delete the course"
+    });
+  }
+});
+
+router.get('/:id/assignments',async (req,res,next)=>{
+  const cid = parseInt(req.params.id);
+  const course = await getCourseById(cid);
+  if(course.length == 0){
+    res.status(404).send({
+      error: "Course not found."
+    });
+  }
+  const list = await getAssignmentsByCourseId(cid);
+  res.status(200).send(list);
+});
 
 module.exports = router;
