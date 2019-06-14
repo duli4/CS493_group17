@@ -164,7 +164,6 @@ router.post('/:id/students', requireAuthentication ,requireAdmin,async (req,res,
         }
         for(var i = 0;i<req.body.remove.length;i++){
           let resultRemove = await removeEnrollmentById(cid,req.body.remove[i]);
-
         }
 
         res.status(200).send({
