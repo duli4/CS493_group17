@@ -86,7 +86,8 @@ router.post('/', requireAuthentication, async (req, res,next) => {
 });
 
 //course/{id}
-router.get('/:id', async(req, res, next) => {
+router.get('/:id',requireAuthentication, async(req, res, next) => {
+
       try{
         const course = await getCourseById(parseInt(req.params.id));
         if (user) {
