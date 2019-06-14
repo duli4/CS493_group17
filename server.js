@@ -31,15 +31,6 @@ app.use('*', function (req, res, next) {
 
 // 
 connectToDB(async () => {
-//   while(1){
-//     try{
-//       await connectToRabbitMQ('images');
-//       console.log("RabbitMQ Connect Success");
-//       break;
-//     }catch (e) {
-//       //console.log("connection err",e,"retrying");
-//     }
-//   }
    app.listen(port, () => {
      console.log("== Server is running on port", port);
    });
