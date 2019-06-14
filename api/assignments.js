@@ -10,7 +10,7 @@ const AssignmentsSchema = {
     points: { required: true },
     due: { required: true }
 };
-const {PushTheFileInFs,getAssignmentsById,updateAssignment,getCourseByid,getSumbitByAsgid,insertNewAssignments,insertNewSumbit,deleteAssignmentByid} = require("../models/assignments");
+const {PushTheFileInFs,getAssignmentsById,updateAssignment,getCourseByid,getSumbitByAsgid,insertNewAssignments,insertNewSumbit,deleteAssignmentByid,getDownloadStreamByFileId} = require("../models/assignments");
 const fs = require('fs');
 
 const upload = multer({
@@ -237,11 +237,12 @@ router.post("/:id/submissions",requireAuthentication,upload.single("file"),async
         const sub={
             assignmentid:assignmentid,
             studentid:req.user,
-            file:'/assignment/media/${fid}'
+            file:"/assignment/files/"+fid
         }
         try{
+            console.log(sub);
             const subid=await insertNewSumbit(sub);
-            res.statusI(201).send({
+            res.status(201).send({
                 submissionid:subid
             });
         }catch(err){
@@ -258,7 +259,7 @@ router.post("/:id/submissions",requireAuthentication,upload.single("file"),async
 
 router.get('/files/:fileid', (req, res, next) => {
     console.log("fileid=",req.params.fileid);
-    getDownloadStreamByFilename(req.params.fileid)
+    getDownloadStreamByFileId(req.params.fileid)
         .on('error', (err) => {
             if (err.code === 'ENOENT') {
                 next();

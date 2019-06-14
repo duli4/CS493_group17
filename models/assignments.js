@@ -15,7 +15,7 @@ const AssignmentsSchema = {
 };
 
 
-exports.getDownloadStreamByFilename = function (id) {
+exports.getDownloadStreamByFileId = function (id) {
     const db = getDBReference();
     const bucket = new GridFSBucket(db, { bucketName: 'submissions' });
     return bucket.openDownloadStream(id);
@@ -102,10 +102,11 @@ exports.insertNewAssignments=insertNewAssignments;
 
 function insertNewSumbit(submit) {
     return new Promise((resolve, reject) => {
-        submit = extractValidFields(sumbit, AssignmentsSchema);
+        //submit = extractValidFields(sumbit, AssignmentsSchema);
+
         submit.id = null;
         mysqlPool.query(
-            'INSERT INTO assignments SET ?',
+            'INSERT INTO submissions SET ?',
             submit,
             (err, result) => {
                 if (err) {
